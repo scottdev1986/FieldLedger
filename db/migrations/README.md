@@ -10,6 +10,7 @@ Migration files therefore do not contain `BEGIN`, `COMMIT`, or a `schema_migrati
 2. `0002_tables_and_indexes.sql` creates users, tenant data, plans, seed metadata, constraints, and indexes.
 3. `0003_app_functions_and_triggers.sql` creates the `app` helpers, controlled organization/plan functions, creator bootstrap, and field-limit guardrail.
 4. `0004_rls_policies_and_grants.sql` forces RLS, creates policies, and grants the runtime role only the intended privileges.
+5. `0005_auth_access.sql` adds the pre-auth login/register security definer functions, the org-peer visibility policy, and the column grant that hides `password_hash`.
 
 ## Apply locally
 
