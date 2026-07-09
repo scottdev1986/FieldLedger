@@ -28,21 +28,74 @@ jobs:
 
   dotnet:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: fieldledger-postgres-dev
+          POSTGRES_DB: fieldledger
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d fieldledger"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
     steps:
       - uses: actions/checkout@v7.0.0
       - uses: actions/setup-dotnet@v5.4.0
         with:
           dotnet-version: "10.0.301"
           global-json-file: global.json
+      - name: Bootstrap roles and apply migrations
+        env:
+          PGPASSWORD: fieldledger-postgres-dev
+        run: |
+          for f in db/init/*.sql; do
+            psql -h localhost -U postgres -d fieldledger -v ON_ERROR_STOP=1 -f "$f"
+          done
+          for f in db/migrations/*.sql; do
+            PGPASSWORD=fieldledger_migrator_dev psql -h localhost -U fieldledger_migrator -d fieldledger -v ON_ERROR_STOP=1 -f "$f"
+          done
       - run: dotnet restore FieldLedger.slnx
       - run: dotnet build FieldLedger.slnx --configuration Release --no-restore
-      - run: dotnet test FieldLedger.slnx --configuration Release --no-build --verbosity normal
+      - name: Test (unit + live-database integration)
+        env:
+          TEST_DATABASE_URL: Host=localhost;Port=5432;Database=fieldledger;Username=fieldledger_api;Password=fieldledger_api_dev
+        run: dotnet test FieldLedger.slnx --configuration Release --no-build --verbosity normal
 
   database:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_PASSWORD: fieldledger-postgres-dev
+          POSTGRES_DB: fieldledger
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d fieldledger"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 20
     steps:
       - uses: actions/checkout@v7.0.0
-      - name: Validate migration placeholders
-        run: test -d db/migrations && test -d db/rls
-      - name: Future RLS policy tests
-        run: echo "TODO: run migrations and RLS policy assertions after Phase 1."
+      - name: Bootstrap roles
+        env:
+          PGPASSWORD: fieldledger-postgres-dev
+        run: |
+          for f in db/init/*.sql; do
+            psql -h localhost -U postgres -d fieldledger -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: Apply migrations as migrator
+        env:
+          PGPASSWORD: fieldledger_migrator_dev
+        run: |
+          for f in db/migrations/*.sql; do
+            psql -h localhost -U fieldledger_migrator -d fieldledger -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: RLS policy assertions
+        env:
+          PGPASSWORD: fieldledger-postgres-dev
+        run: psql -h localhost -U postgres -d fieldledger -v ON_ERROR_STOP=1 -f db/rls/rls-checks.sql
