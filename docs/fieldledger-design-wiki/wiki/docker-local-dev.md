@@ -127,9 +127,12 @@ SEED_VERSION=fieldledger-demo-v1
 ## Local setup flow
 
 ```bash
-cp .env.example .env   # optional — the defaults work as-is
 docker compose up --build
 ```
+
+Every variable has a working local default baked into `docker-compose.yml`. To override
+any of them, create an untracked `.env` file (see
+[`templates/.env.example`](../templates/.env.example) for the full variable reference).
 
 Compose ordering does the rest: `db` starts and passes its healthcheck, `migrate` applies migrations and exits, then `api` and `web` start.
 

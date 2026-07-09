@@ -13,7 +13,6 @@ This is the two-minute portfolio walkthrough.
 ## Setup
 
 ```bash
-cp .env.example .env   # optional; every default works locally
 docker compose up --build
 ```
 

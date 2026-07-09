@@ -14,7 +14,7 @@ FieldLedger is complete when the following are true.
 
 - [ ] `docker compose up --build` starts `db`, `migrate`, `api`, and `web`.
 - [ ] `docker compose run --rm seeder` creates demo data from zero.
-- [ ] `.env` is optional; every variable in `.env.example` has a working local default.
+- [ ] No `.env` file is required; every variable has a working local default in `docker-compose.yml`, with the full variable reference kept in the wiki's `templates/.env.example`.
 - [ ] README documents fully local setup — no external service setup section is needed.
 
 ## Demo users and data

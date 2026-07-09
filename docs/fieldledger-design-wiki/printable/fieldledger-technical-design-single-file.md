@@ -643,7 +643,7 @@ Endpoints:
 
 Token issuance and validation:
 
-- HS256 JWTs signed with `AUTH_JWT_SECRET` (>= 32 chars; dev default lives in `.env.example`).
+- HS256 JWTs signed with `AUTH_JWT_SECRET` (>= 32 chars; dev default lives in `docker-compose.yml`).
 - Issuer `AUTH_JWT_ISSUER=fieldledger-api`, audience `AUTH_JWT_AUDIENCE=fieldledger`.
 - Lifetime `AUTH_TOKEN_LIFETIME_MINUTES` (default 720).
 - Claims: `sub` (user id uuid), `email`, `name`.
@@ -724,7 +724,7 @@ Rules:
 
 - `fieldledger_api` must not have `BYPASSRLS`.
 - `fieldledger_migrator` connects via `DATABASE_ADMIN_URL` and is used only by the `migrate` service and the seeder — never by API or web user traffic.
-- Dev-only passwords live in `.env.example` defaults; a production deployment would rotate them and split a separate system role. (`fieldledger_system` from v1 is dropped — without webhooks there is no unattended system write path.)
+- Dev-only passwords live in `docker-compose.yml` defaults; a production deployment would rotate them and split a separate system role. (`fieldledger_system` from v1 is dropped — without webhooks there is no unattended system write path.)
 
 ## Helper functions
 
@@ -1862,9 +1862,12 @@ SEED_VERSION=fieldledger-demo-v1
 ## Local setup flow
 
 ```bash
-cp .env.example .env   # optional — the defaults work as-is
 docker compose up --build
 ```
+
+Every variable has a working local default baked into `docker-compose.yml`. To override
+any of them, create an untracked `.env` file (see
+[`templates/.env.example`](../templates/.env.example) for the full variable reference).
 
 Compose ordering does the rest: `db` starts and passes its healthcheck, `migrate` applies migrations and exits, then `api` and `web` start.
 
@@ -2031,7 +2034,7 @@ A pull request is healthy when:
 | Claims leak across pooled DB connections | User context contamination | Use transaction-scoped settings (`set_config(..., true)`) and dispose transactions correctly. |
 | RLS policies become complex | Bugs and maintenance drag | Centralize helper functions and add direct policy tests. |
 | Browser token storage in `localStorage` | XSS exposure of the session token | Accepted portfolio-v1 tradeoff, documented; short token lifetime is a config option (`AUTH_TOKEN_LIFETIME_MINUTES`). |
-| Dev-default secrets in `.env.example` | Copied into a real deployment | Documented as local-only; rotate all secrets and passwords in real deploys. |
+| Dev-default secrets in `docker-compose.yml` defaults | Copied into a real deployment | Documented as local-only; rotate all secrets and passwords in real deploys. |
 | Free limit only in UI | Easy bypass | Enforce in API and DB trigger. |
 | Seeder duplicates data | Messy demo | Use marker row, upserts, deterministic keys. |
 | PDF library licensing changes | Future production constraint | Document dependency and license assumptions. |
@@ -2074,7 +2077,6 @@ This is the two-minute portfolio walkthrough.
 ## Setup
 
 ```bash
-cp .env.example .env   # optional; every default works locally
 docker compose up --build
 ```
 
@@ -2149,7 +2151,7 @@ FieldLedger is complete when the following are true.
 
 - [ ] `docker compose up --build` starts `db`, `migrate`, `api`, and `web`.
 - [ ] `docker compose run --rm seeder` creates demo data from zero.
-- [ ] `.env` is optional; every variable in `.env.example` has a working local default.
+- [ ] No `.env` file is required; every variable has a working local default in `docker-compose.yml`, with the full variable reference kept in the wiki's `templates/.env.example`.
 - [ ] README documents fully local setup — no external service setup section is needed.
 
 ## Demo users and data
@@ -2211,7 +2213,7 @@ Build FieldLedger in layers. Each phase should end with a runnable state.
 
 - Create monorepo structure.
 - Add Docker Compose skeleton.
-- Add `.env.example`.
+- Document environment variables (compose defaults plus the wiki env template).
 - Add README stub.
 - Add CI skeleton.
 

@@ -41,7 +41,7 @@ Endpoints:
 
 Token issuance and validation:
 
-- HS256 JWTs signed with `AUTH_JWT_SECRET` (>= 32 chars; dev default lives in `.env.example`).
+- HS256 JWTs signed with `AUTH_JWT_SECRET` (>= 32 chars; dev default lives in `docker-compose.yml`).
 - Issuer `AUTH_JWT_ISSUER=fieldledger-api`, audience `AUTH_JWT_AUDIENCE=fieldledger`.
 - Lifetime `AUTH_TOKEN_LIFETIME_MINUTES` (default 720).
 - Claims: `sub` (user id uuid), `email`, `name`.
@@ -122,7 +122,7 @@ Rules:
 
 - `fieldledger_api` must not have `BYPASSRLS`.
 - `fieldledger_migrator` connects via `DATABASE_ADMIN_URL` and is used only by the `migrate` service and the seeder — never by API or web user traffic.
-- Dev-only passwords live in `.env.example` defaults; a production deployment would rotate them and split a separate system role. (`fieldledger_system` from v1 is dropped — without webhooks there is no unattended system write path.)
+- Dev-only passwords live in `docker-compose.yml` defaults; a production deployment would rotate them and split a separate system role. (`fieldledger_system` from v1 is dropped — without webhooks there is no unattended system write path.)
 
 ## Helper functions
 

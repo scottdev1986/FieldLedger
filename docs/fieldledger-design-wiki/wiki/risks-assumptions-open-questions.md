@@ -16,7 +16,7 @@ related: [architecture, auth-rls, billing-entitlements]
 | Claims leak across pooled DB connections | User context contamination | Use transaction-scoped settings (`set_config(..., true)`) and dispose transactions correctly. |
 | RLS policies become complex | Bugs and maintenance drag | Centralize helper functions and add direct policy tests. |
 | Browser token storage in `localStorage` | XSS exposure of the session token | Accepted portfolio-v1 tradeoff, documented; short token lifetime is a config option (`AUTH_TOKEN_LIFETIME_MINUTES`). |
-| Dev-default secrets in `.env.example` | Copied into a real deployment | Documented as local-only; rotate all secrets and passwords in real deploys. |
+| Dev-default secrets in `docker-compose.yml` defaults | Copied into a real deployment | Documented as local-only; rotate all secrets and passwords in real deploys. |
 | Free limit only in UI | Easy bypass | Enforce in API and DB trigger. |
 | Seeder duplicates data | Messy demo | Use marker row, upserts, deterministic keys. |
 | PDF library licensing changes | Future production constraint | Document dependency and license assumptions. |

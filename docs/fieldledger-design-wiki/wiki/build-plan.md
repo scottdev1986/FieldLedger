@@ -14,7 +14,7 @@ Build FieldLedger in layers. Each phase should end with a runnable state.
 
 - Create monorepo structure.
 - Add Docker Compose skeleton.
-- Add `.env.example`.
+- Document environment variables (compose defaults plus the wiki env template).
 - Add README stub.
 - Add CI skeleton.
 
