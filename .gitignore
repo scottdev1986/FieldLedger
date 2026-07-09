@@ -37,6 +37,8 @@ pnpm-debug.log*
 
 # AI assistant local state
 # Keep project skills in .agents/skills tracked.
+CLAUDE.md
+CLAUDE.local.md
 .codex/
 .claude/settings.local.json
 .claude/logs/
