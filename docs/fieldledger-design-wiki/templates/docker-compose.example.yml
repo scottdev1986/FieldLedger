@@ -1,0 +1,63 @@
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: fieldledger
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fieldledger-postgres-dev}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fieldledger"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+  migrate:
+    build:
+      context: ./apps/seeder
+    command: migrate
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ./apps/api
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./apps/web
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      - api
+
+  seeder:
+    build:
+      context: ./apps/seeder
+    profiles:
+      - tools
+    env_file:
+      - path: .env
+        required: false
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dbdata:

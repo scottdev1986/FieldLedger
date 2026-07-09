@@ -1,0 +1,16 @@
+sequenceDiagram
+  autonumber
+  participant U as Owner Browser
+  participant A as ASP.NET Core API
+  participant D as Postgres
+
+  U->>A: POST /api/orgs/{orgId}/billing/upgrade (Bearer JWT)
+  A->>D: begin; set local role authenticated; set_config('app.user_id', sub, true)
+  A->>D: select app.set_org_plan(orgId, 'pro')
+  D->>D: verify app.can_manage_org(orgId)
+  D->>D: update entitlements row
+  D->>D: insert plan_changes audit row
+  A->>D: commit
+  A-->>U: 200 { plan: "pro", ... }
+  U->>A: Refetch GET /api/orgs/{orgId}/billing and dashboard
+  A-->>U: plan = pro, limits lifted, history shows audit row

@@ -1,0 +1,17 @@
+flowchart LR
+  Browser[Next.js / React / Tailwind Web App]
+  Api[ASP.NET Core Web API]
+  Pg[(PostgreSQL 17 + RLS)]
+  Migrate[Migrate One-Shot Service]
+  Seeder[C# Seeder Console App]
+
+  Browser -->|Register / login via first-party auth| Api
+  Browser -->|Bearer API-issued JWT| Api
+  Api -->|Issue + validate HS256 JWT| Api
+  Api -->|Transaction-scoped user context - app.user_id| Pg
+
+  Browser -->|Owner-only upgrade / downgrade| Api
+  Api -->|app.set_org_plan updates entitlements + plan_changes| Pg
+
+  Migrate -->|Apply db/migrations under advisory lock| Pg
+  Seeder -->|Insert demo users + deterministic demo data| Pg

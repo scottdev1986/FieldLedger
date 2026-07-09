@@ -1,0 +1,89 @@
+erDiagram
+  USERS ||--o{ ORGANIZATION_MEMBERS : joins
+  ORGANIZATIONS ||--o{ ORGANIZATION_MEMBERS : has
+  ORGANIZATIONS ||--o{ FIELDS : owns
+  ORGANIZATIONS ||--o{ SEASONS : has
+  FIELDS ||--o{ FIELD_SEASONS : has
+  SEASONS ||--o{ FIELD_SEASONS : has
+  FIELDS ||--o{ ACTIVITIES : logs
+  SEASONS ||--o{ ACTIVITIES : includes
+  ORGANIZATIONS ||--o| ENTITLEMENTS : has
+  ORGANIZATIONS ||--o{ PLAN_CHANGES : audits
+  USERS ||--o{ PLAN_CHANGES : changed_by
+
+  USERS {
+    uuid id PK
+    citext email
+    text display_name
+    text password_hash
+    timestamptz created_at
+  }
+
+  ORGANIZATIONS {
+    uuid id PK
+    text name
+    text slug
+    uuid created_by
+  }
+
+  ORGANIZATION_MEMBERS {
+    uuid organization_id PK
+    uuid user_id PK
+    member_role role
+    text status
+  }
+
+  FIELDS {
+    uuid id PK
+    uuid organization_id FK
+    text name
+    numeric acreage
+    crop_type default_crop
+  }
+
+  SEASONS {
+    uuid id PK
+    uuid organization_id FK
+    int year
+    date starts_on
+    date ends_on
+  }
+
+  FIELD_SEASONS {
+    uuid id PK
+    uuid organization_id FK
+    uuid field_id FK
+    uuid season_id FK
+    crop_type crop
+  }
+
+  ACTIVITIES {
+    uuid id PK
+    uuid organization_id FK
+    uuid field_id FK
+    uuid season_id FK
+    activity_type activity_type
+    date activity_date
+    numeric cost_amount
+    numeric revenue_amount
+  }
+
+  ENTITLEMENTS {
+    uuid organization_id PK
+    plan_tier plan
+    uuid updated_by FK
+  }
+
+  PLAN_CHANGES {
+    uuid id PK
+    uuid organization_id FK
+    plan_tier from_plan
+    plan_tier to_plan
+    uuid changed_by FK
+    timestamptz changed_at
+  }
+
+  SEED_RUNS {
+    text seed_version PK
+    timestamptz completed_at
+  }

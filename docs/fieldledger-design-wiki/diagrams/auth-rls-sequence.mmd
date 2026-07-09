@@ -1,0 +1,20 @@
+sequenceDiagram
+  autonumber
+  participant U as User Browser
+  participant A as ASP.NET Core API
+  participant D as PostgreSQL 17 (RLS)
+
+  U->>A: POST /api/auth/login (email/password)
+  A->>A: Verify PBKDF2 password hash (PasswordHasher)
+  A->>A: Issue HS256 JWT (sub, email, name)
+  A-->>U: { accessToken, user }
+  U->>A: API request with Bearer JWT
+  A->>A: Validate issuer/audience/signature/expiry
+  A->>D: BEGIN
+  A->>D: SET LOCAL role authenticated
+  A->>D: select set_config('app.user_id', user_id, true)
+  A->>D: Execute tenant query
+  D->>D: RLS checks organization_members
+  D-->>A: Authorized rows only
+  A->>D: COMMIT
+  A-->>U: Response

@@ -1,0 +1,91 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run build
+
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore
+      - run: dotnet build --configuration Release --no-restore
+      - run: dotnet test --configuration Release --no-build
+
+  seeder:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/seeder
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - run: dotnet restore
+      - run: dotnet build --configuration Release --no-restore
+      - run: dotnet test --configuration Release --no-build
+
+  database:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: fieldledger
+          POSTGRES_PASSWORD: fieldledger-postgres-ci
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d fieldledger"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: '5432'
+      PGUSER: postgres
+      PGPASSWORD: fieldledger-postgres-ci
+      PGDATABASE: fieldledger
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply role bootstrap
+        run: |
+          for f in db/init/*.sql; do
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: Apply migrations
+        run: |
+          for f in db/migrations/*.sql; do
+            psql -v ON_ERROR_STOP=1 -f "$f"
+          done
+      - name: Run RLS policy assertions
+        run: |
+          # TODO: replace with the committed RLS assertion script
+          # psql -v ON_ERROR_STOP=1 -f db/tests/rls-assertions.sql
+          echo "RLS assertion script placeholder"
