@@ -23,3 +23,7 @@ Redesigned the wiki for a fully self-contained stack per user direction: local P
 ## [2026-07-09] implementation | Auth data-access functions (migration 0005)
 
 Implementation verification showed the v2 `users` policies blocked pre-auth login/register lookups and peer display names for the members roster. Added `db/migrations/0005_auth_access.sql` (security definer `app.get_user_for_login`, `app.register_user`, `app.shares_org_with`; `users_read_org_peers` policy; column-level `users` grant excluding `password_hash`) and documented the design in `wiki/auth-rls.md`. RLS assertion suite still passes.
+
+## [2026-07-09] implementation | Full v2 build complete and verified
+
+Implementation of the v2 design finished: database (6 migrations, RLS suite green), ASP.NET Core API (20/20 tests including live-database integration tests), deterministic seeder with migrate mode, and the complete Next.js frontend per the design brief. Verified end-to-end from zero via Docker Compose and a full browser walkthrough (owner/agronomist/viewer roles, Free→Pro in-app upgrade with audit trail, gated report/CSV unlock). Added migration `0006_auth_function_text_params.sql` (auth functions take text params — citext params fail typed-driver function resolution) and synced the printable document's auth section. CI runs migrations, RLS assertions, and the full test suite against a Postgres 17 service container.

@@ -654,6 +654,20 @@ Password storage:
 - ASP.NET Core Identity `PasswordHasher` (PBKDF2). Hashes live in `users.password_hash`; plaintext passwords are never stored or logged.
 - The seeder produces hashes with the same algorithm parameters so demo logins work against the API.
 
+Auth data access (migration `0005_auth_access.sql`):
+
+- Login and register run before any authenticated request context exists, so they cannot
+  pass through the normal RLS path. They call security definer functions instead:
+  `app.get_user_for_login(email)` (the only path that exposes `password_hash`, executable
+  only by `fieldledger_api`) and `app.register_user(email, display_name, password_hash)`
+  (email unique-violation maps to `409`).
+- The members roster needs peer names, so `users` has a second select policy,
+  `users_read_org_peers`, backed by security definer `app.shares_org_with(user_id)`
+  (active shared org membership).
+- The table-level `users` select grant is replaced by a column grant
+  (`id, email, display_name, created_at`) so `authenticated` can never read
+  `password_hash` directly.
+
 Relevant docs:
 
 - [ASP.NET Core JWT bearer authentication and PasswordHasher](../docs/source-map.md#aspnet-core)
