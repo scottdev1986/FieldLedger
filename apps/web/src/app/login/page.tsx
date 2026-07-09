@@ -51,7 +51,7 @@ export default function LoginPage() {
     <AuthFrame>
       <div className="mb-9 min-[900px]:hidden"><Logo /></div>
       <p className="overline">Welcome back</p>
-      <h2 className="mt-2 font-display text-[28px] font-semibold text-ink">Sign in to your ledger</h2>
+      <h2 className="mt-2 text-2xl font-semibold tracking-tight text-ink">Sign in to your ledger</h2>
       <p className="mt-2 text-sm text-ink-soft">Use your account or step into a seeded demo role.</p>
       <form className="mt-7 space-y-4" onSubmit={handleSubmit(signIn)}>
         <div><label className="form-label" htmlFor="email">Email</label><input autoComplete="email" className="form-control" id="email" type="email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "email-error" : undefined} {...register("email")} /><FieldError id="email-error" message={errors.email?.message} /></div>

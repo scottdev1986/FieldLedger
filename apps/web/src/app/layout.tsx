@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
-import { Fraunces, Instrument_Sans, Spline_Sans_Mono } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
 import { Providers } from "@/app/providers";
 import "./globals.css";
 
-const fraunces = Fraunces({ subsets: ["latin"], variable: "--font-fraunces", display: "swap" });
-const instrument = Instrument_Sans({ subsets: ["latin"], variable: "--font-instrument", display: "swap" });
-const splineMono = Spline_Sans_Mono({ subsets: ["latin"], variable: "--font-splinemono", display: "swap" });
+const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans", display: "swap" });
+const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 
 export const metadata: Metadata = {
   title: { default: "FieldLedger", template: "%s · FieldLedger" },
@@ -15,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${instrument.variable} ${splineMono.variable}`}>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
       <body><Providers>{children}</Providers></body>
     </html>
   );

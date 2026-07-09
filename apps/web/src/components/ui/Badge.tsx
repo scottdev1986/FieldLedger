@@ -8,8 +8,8 @@ export function PlanBadge({ plan }: { plan: Plan }) {
     <span
       className={cx(
         base,
-        "font-mono uppercase tabular-nums",
-        plan === "pro" ? "bg-brand-800 text-white" : "border border-line-strong bg-sunken text-ink-soft",
+        "uppercase tracking-wide",
+        plan === "pro" ? "bg-ink text-white" : "border border-line-strong bg-surface text-ink-soft",
       )}
     >
       {plan}
@@ -22,7 +22,7 @@ export function RoleBadge({ role }: { role: Role }) {
     <span
       className={cx(
         base,
-        "border font-mono uppercase",
+        "border uppercase tracking-wide",
         role === "owner" && "border-warn/25 bg-warn-bg text-warn",
         role === "agronomist" && "border-brand-200 bg-brand-50 text-brand-700",
         role === "viewer" && "border-info/25 bg-info-bg text-info",

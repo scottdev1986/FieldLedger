@@ -1,7 +1,6 @@
 import { CircleAlert, FolderOpen, Lock, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import type { HTMLAttributes, ReactNode } from "react";
-import { ContourPattern } from "@/components/ContourPattern";
 import { buttonClasses } from "@/components/ui/Button";
 import type { Role } from "@/lib/api-types";
 import { cx } from "@/lib/format";
@@ -29,7 +28,7 @@ export function PageHeader({
     <header className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div className="min-w-0">
         <Overline>{overline}</Overline>
-        <h1 className="mt-2 font-display text-[28px] font-semibold leading-tight text-ink">{title}</h1>
+        <h1 className="mt-2 text-2xl font-semibold leading-tight tracking-tight text-ink">{title}</h1>
         {description ? <p className="mt-2 max-w-2xl text-sm text-ink-soft">{description}</p> : null}
       </div>
       {action ? <div className="flex shrink-0 items-center gap-2">{action}</div> : null}
@@ -54,10 +53,11 @@ export function EmptyState({
   icon?: LucideIcon;
 }) {
   return (
-    <div className="relative isolate flex min-h-64 flex-col items-center justify-center overflow-hidden px-6 py-12 text-center">
-      <ContourPattern className="-z-10 text-brand-700 opacity-[0.04]" />
-      <Icon aria-hidden="true" className="h-8 w-8 text-ink-faint" />
-      <p className="mt-4 font-display text-lg font-medium text-ink">{title}</p>
+    <div className="flex min-h-64 flex-col items-center justify-center px-6 py-12 text-center">
+      <span className="grid h-11 w-11 place-items-center rounded-lg border border-line bg-sunken">
+        <Icon aria-hidden="true" className="h-5 w-5 text-ink-faint" />
+      </span>
+      <p className="mt-4 text-[15px] font-semibold text-ink">{title}</p>
       <p className="mt-1 max-w-sm text-[13px] text-ink-soft">{description}</p>
       {action ? <div className="mt-5">{action}</div> : null}
     </div>
@@ -66,8 +66,7 @@ export function EmptyState({
 
 export function ProLock({ orgId, role, sentence }: { orgId: string; role: Role; sentence: string }) {
   return (
-    <Card className="relative isolate overflow-hidden">
-      <ContourPattern className="-z-10 text-brand-700 opacity-[0.04]" />
+    <Card>
       <div className="flex items-center gap-2 text-brand-700"><Lock aria-hidden="true" className="h-4 w-4" /><Overline className="text-brand-700">Pro</Overline></div>
       <p className="mt-3 text-sm text-ink">{sentence}</p>
       {role === "owner" ? (

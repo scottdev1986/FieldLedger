@@ -66,7 +66,7 @@ export function Dialog({ open, onClose, title, description, children, footer, va
       >
         <header className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
           <div>
-            <h2 className="font-display text-lg font-semibold text-ink" id={titleId}>{title}</h2>
+            <h2 className="text-base font-semibold tracking-tight text-ink" id={titleId}>{title}</h2>
             {description ? <p className="mt-1 text-[13px] text-ink-soft" id={descriptionId}>{description}</p> : null}
           </div>
           <Button aria-label="Close" className="-mr-2 -mt-2" onClick={onClose} size="sm" variant="ghost">

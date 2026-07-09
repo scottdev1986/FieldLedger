@@ -37,7 +37,7 @@ export default function RegisterPage() {
   return (
     <AuthFrame>
       <div className="mb-9 min-[900px]:hidden"><Logo /></div>
-      <p className="overline">Start a ledger</p><h2 className="mt-2 font-display text-[28px] font-semibold">Create your account</h2><p className="mt-2 text-sm text-ink-soft">You can create or join a farm organization next.</p>
+      <p className="overline">Start a ledger</p><h2 className="mt-2 text-2xl font-semibold tracking-tight">Create your account</h2><p className="mt-2 text-sm text-ink-soft">You can create or join a farm organization next.</p>
       <form className="mt-7 space-y-4" onSubmit={handleSubmit(submit)}>
         <div><label className="form-label" htmlFor="displayName">Display name</label><input autoComplete="name" className="form-control" id="displayName" aria-invalid={Boolean(errors.displayName)} aria-describedby={errors.displayName ? "name-error" : undefined} {...register("displayName")} /><FieldError id="name-error" message={errors.displayName?.message} /></div>
         <div><label className="form-label" htmlFor="email">Email</label><input autoComplete="email" className="form-control" id="email" type="email" aria-invalid={Boolean(errors.email)} aria-describedby={errors.email ? "email-error" : undefined} {...register("email")} /><FieldError id="email-error" message={errors.email?.message} /></div>

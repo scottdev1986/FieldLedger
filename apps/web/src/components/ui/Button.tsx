@@ -7,14 +7,14 @@ export type ButtonSize = "sm" | "md" | "lg";
 
 export function buttonClasses(variant: ButtonVariant = "primary", size: ButtonSize = "md") {
   return cx(
-    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-50",
+    "inline-flex shrink-0 items-center justify-center gap-2 rounded-md font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50",
     size === "sm" && "h-8 px-3 text-[13px]",
     size === "md" && "h-10 px-4 text-sm",
     size === "lg" && "h-11 px-5 text-sm",
-    variant === "primary" && "bg-brand-600 text-white hover:bg-brand-700 active:bg-brand-800",
-    variant === "secondary" && "border border-line-strong bg-surface text-ink hover:bg-sunken",
+    variant === "primary" && "bg-brand-600 text-white shadow-xs hover:bg-brand-700 active:bg-brand-800",
+    variant === "secondary" && "border border-line-strong bg-surface text-ink shadow-xs hover:bg-sunken",
     variant === "ghost" && "text-ink-soft hover:bg-sunken hover:text-ink",
-    variant === "destructive" && "bg-danger text-white hover:brightness-90",
+    variant === "destructive" && "bg-danger text-white shadow-xs hover:brightness-90",
   );
 }
 

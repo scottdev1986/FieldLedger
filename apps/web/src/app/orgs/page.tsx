@@ -47,8 +47,8 @@ function OrganizationsContent() {
         {query.error ? <ErrorState error={query.error} onRetry={() => void query.refetch()} /> : query.data?.organizations.length ? (
           <div className="grid gap-4 md:grid-cols-2">
             {query.data.organizations.map((org) => (
-              <Link className="group card block p-5 transition-colors hover:border-brand-300" href={`/orgs/${org.id}`} key={org.id}>
-                <div className="flex items-start justify-between gap-4"><div><h2 className="font-display text-xl font-medium text-ink">{org.name}</h2><p className="mt-2 font-mono text-xs text-ink-faint">{formatNumber(org.activeFieldCount, 0)} fields · {formatNumber(org.seasonCount, 0)} seasons</p></div><ChevronRight className="h-5 w-5 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-brand-600" /></div>
+              <Link className="group card block p-5 transition-[border-color,box-shadow] duration-150 hover:border-line-strong hover:shadow-pop" href={`/orgs/${org.id}`} key={org.id}>
+                <div className="flex items-start justify-between gap-4"><div><h2 className="text-lg font-semibold tracking-tight text-ink">{org.name}</h2><p className="mt-2 font-mono text-xs text-ink-faint">{formatNumber(org.activeFieldCount, 0)} fields · {formatNumber(org.seasonCount, 0)} seasons</p></div><ChevronRight className="h-5 w-5 text-ink-faint transition-transform group-hover:translate-x-0.5 group-hover:text-brand-600" /></div>
                 <div className="mt-5 flex gap-2"><RoleBadge role={org.role} /><PlanBadge plan={org.plan} /></div>
               </Link>
             ))}

@@ -59,7 +59,7 @@ function OrgSwitcher({ organization, orgs }: { organization: OrganizationSummary
       <button
         aria-expanded={open}
         aria-haspopup="menu"
-        className="flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-line-strong bg-surface px-3 py-2 text-left hover:bg-sunken"
+        className="flex min-h-10 w-full items-center justify-between gap-3 rounded-md border border-line-strong bg-surface px-3 py-2 text-left shadow-xs transition-colors duration-150 hover:bg-sunken"
         onClick={() => setOpen((value) => !value)}
       >
         <span className="min-w-0 truncate text-[13px] font-medium text-ink">{organization.name}</span>
@@ -100,8 +100,8 @@ function Sidebar({ organization, orgs, close }: { organization: OrganizationSumm
             <Link
               aria-current={active ? "page" : undefined}
               className={cx(
-                "relative flex h-9 items-center gap-3 rounded-md px-3 text-[13px] font-medium text-ink-soft hover:bg-sunken",
-                active && "bg-brand-50 text-brand-700 before:absolute before:left-0 before:h-5 before:w-0.5 before:bg-brand-600",
+                "flex h-9 items-center gap-3 rounded-md px-3 text-[13px] font-medium text-ink-soft transition-colors duration-150 hover:bg-sunken hover:text-ink",
+                active && "bg-brand-50 text-brand-700 hover:bg-brand-50 hover:text-brand-700",
               )}
               href={href}
               key={item.label}
@@ -156,7 +156,7 @@ function ShellContent({ children }: { children: ReactNode }) {
   const orgQuery = useQuery({ queryKey: queryKeys.orgs, queryFn: () => apiFetch<OrganizationsResponse>("/api/orgs") });
   if (orgQuery.isLoading) return <AppSkeleton />;
   const organization = orgQuery.data?.organizations.find((org) => org.id === orgId);
-  if (!organization) return <div className="grid min-h-screen place-items-center p-6"><div className="card max-w-md"><p className="font-display text-xl">Organization unavailable</p><p className="mt-2 text-sm text-ink-soft">It may not exist, or your membership no longer grants access.</p><Link className="mt-4 inline-block text-sm font-medium text-brand-700" href="/orgs">Return to organizations</Link></div></div>;
+  if (!organization) return <div className="grid min-h-screen place-items-center p-6"><div className="card max-w-md"><p className="text-lg font-semibold tracking-tight">Organization unavailable</p><p className="mt-2 text-sm text-ink-soft">It may not exist, or your membership no longer grants access.</p><Link className="mt-4 inline-block text-sm font-medium text-brand-700" href="/orgs">Return to organizations</Link></div></div>;
   const page = pathname.includes("/fields/") ? "Field detail" : pathname.endsWith("/fields") ? "Fields" : pathname.endsWith("/insights") ? "Insights" : pathname.includes("/report") ? "Season report" : pathname.endsWith("/members") ? "Members" : pathname.endsWith("/billing") ? "Plan & billing" : "Dashboard";
   return (
     <OrgProvider organization={organization}>
