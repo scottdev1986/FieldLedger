@@ -1,0 +1,135 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+.Spotlight-V100
+.Trashes
+.fseventsd
+
+# Editors and IDEs
+.idea/
+.vscode/
+.vs/
+*.iml
+*.swp
+*.swo
+*~
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# AI assistant local state
+# Keep project skills in .agents/skills tracked.
+.codex/
+.claude/settings.local.json
+.claude/logs/
+.claude/cache/
+.claude/projects/
+.claude/todos/
+.aider*
+.continue/
+.gemini/
+.cursor/cache/
+.cursor/index/
+.windsurf/cache/
+.agents
+.claude
+
+# Node, Next.js, React, Tailwind
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches/
+!.yarn/plugins/
+!.yarn/releases/
+!.yarn/sdks/
+!.yarn/versions/
+.next/
+out/
+dist/
+build/
+.turbo/
+.swc/
+.parcel-cache/
+.cache/
+*.tsbuildinfo
+.eslintcache
+.stylelintcache
+
+# .NET, ASP.NET Core, C# seeder
+bin/
+obj/
+artifacts/
+TestResults/
+*.user
+*.rsuser
+*.suo
+*.userosscache
+*.sln.docstates
+*.nupkg
+*.snupkg
+*.coverage
+*.coveragexml
+coverage/
+
+# Docker and local orchestration
+.docker/
+docker-compose.override.yml
+compose.override.yml
+
+# Supabase, Postgres, local databases
+.supabase/
+supabase/.branches/
+supabase/.temp/
+supabase/.env
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+
+# Stripe CLI
+.stripe/
+stripe.log
+
+# Test and browser automation output
+playwright-report/
+test-results/
+.nyc_output/
+
+# Python helper and validation scripts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Generated archives and temporary files
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+*.tmp
+*.temp
+tmp/
+temp/
