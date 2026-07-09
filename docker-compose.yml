@@ -1,0 +1,85 @@
+services:
+  db:
+    image: postgres:17-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: fieldledger
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-fieldledger-postgres-dev}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d fieldledger"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+
+  migrate:
+    build:
+      context: ./apps/seeder
+    command: migrate
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL:-Host=db;Port=5432;Database=fieldledger;Username=fieldledger_migrator;Password=fieldledger_migrator_dev}
+    volumes:
+      - ./db/migrations:/db/migrations:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    build:
+      context: ./apps/api
+    ports:
+      - "8080:8080"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Development}
+      ASPNETCORE_HTTP_PORTS: 8080
+      DATABASE_URL: ${DATABASE_URL:-Host=db;Port=5432;Database=fieldledger;Username=fieldledger_api;Password=fieldledger_api_dev}
+      AUTH_JWT_SECRET: ${AUTH_JWT_SECRET:-fieldledger-local-dev-secret-change-me-0123456789}
+      AUTH_JWT_ISSUER: ${AUTH_JWT_ISSUER:-fieldledger-api}
+      AUTH_JWT_AUDIENCE: ${AUTH_JWT_AUDIENCE:-fieldledger}
+      AUTH_TOKEN_LIFETIME_MINUTES: ${AUTH_TOKEN_LIFETIME_MINUTES:-720}
+      APP_PUBLIC_URL: ${APP_PUBLIC_URL:-http://localhost:3000}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  web:
+    build:
+      context: ./apps/web
+    ports:
+      - "3000:3000"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8080}
+    depends_on:
+      - api
+
+  seeder:
+    build:
+      context: ./apps/seeder
+    profiles:
+      - tools
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      DATABASE_ADMIN_URL: ${DATABASE_ADMIN_URL:-Host=db;Port=5432;Database=fieldledger;Username=fieldledger_migrator;Password=fieldledger_migrator_dev}
+      SEED_VERSION: ${SEED_VERSION:-fieldledger-demo-v1}
+    volumes:
+      - ./db/migrations:/db/migrations:ro
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  dbdata:
